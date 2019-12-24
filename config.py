@@ -1,4 +1,4 @@
 DEBUG = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:root1234@localhost/res_app' 
+SQLALCHEMY_DATABASE_URI = 'postgres://iykmpbdhrudusu:f5cfe051cfe1715e8441967c29d739316bc61509e05ae800a76ff170702a139c@ec2-174-129-255-57.compute-1.amazonaws.com:5432/dfgc9qkl69le6r' 
 SECRET_KEY = 'secret!'
