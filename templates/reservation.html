@@ -1,0 +1,34 @@
+{% include 'layout.html' %}
+
+{% block body %}
+    <form method="POST" action="">
+        <input type="date" name="sday">
+        <input type="number" step="1" name="n_of_people">
+        <input type="submit" value="Add" name="add">
+    </form>
+    <form method="POST" action="">
+        <input type="submit" value="Show" name="show">
+        <input type="submit" value="Hide" name="hide">
+    </form>
+
+    {% if msg %}
+
+        <p>{{ msg }}</p>
+    
+    {% endif %}
+
+    {% if toshow %}
+        <h1>Reservations</h1>
+        {% for i in reservations %}
+            <p>{{i.s_day}}</p>
+            <p>n. of people: {{ i.s_freespot }}</p>
+            <form method = "POST">
+                <input type="hidden" name ="get_id_to_delete" value ="{{ i.s_day }}">
+                <input type="hidden" name = "get_id_to_delete" value="{{ i.id }}">
+                <input type="submit" name = "delete" value="Delete!">
+            </form>
+            <p>{{i.s_r_id}}</p>
+        {% endfor %}
+    {% endif %}
+
+{% endblock body %}

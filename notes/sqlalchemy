@@ -1,0 +1,10 @@
+load db and tables
+from app* import db*
+from app* import Tablename*(Restaurants)
+
+
+Add Values to existing table(Restaurants)
+
+a = Restaurants(r_name="Pippo", r_adress="viao a", r_ownername="ciccio")
+db.session.add(a)
+db.session.commit()

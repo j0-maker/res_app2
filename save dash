@@ -1,0 +1,36 @@
+@app.route("/dashboard", methods=["GET", "POST"])
+@is_logged_in
+def dashboard():
+    #loading all restaurant data with id of the session
+    dataload = ReSettings.query.filter_by(d_r_id = session['id']).all()
+    msg = None
+    if request.method == "POST":
+        #manage POST from hours form and from days form
+        #hours form
+        if "settings" in request.form:
+            open_time = request.form["open-time"]
+            close_time = request.form["close-time"]
+            if open_time < close_time:
+                print("ok")
+                msg = "opening and closing time set!"
+
+            else:
+                print("not ok")
+                msg = "opening time must be smaller then closing time"
+        #days form
+        else:
+            for i in range (1,8):
+                try:
+                    a = request.form[str(i)]
+                    old_close = ReSettings.query.filter_by(d_close = a, d_days = int(i)).first()
+
+                    if old_close.d_close == 0:
+                        old_close.d_close = 1
+                        db.session.commit()
+
+                    else:
+                        old_close.d_close = 0
+                        db.session.commit()
+                except:
+                    pass
+    return render_template("dashboard.html", dataload=dataload, msg=msg)

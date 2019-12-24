@@ -1,0 +1,9 @@
+h1 {
+    color: blue;
+}
+
+#alert {
+    transition: background-color 4s ease;
+    background-color:blue;
+}
+

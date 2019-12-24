@@ -1,0 +1,8 @@
+<a href="/" class="button">home</a>
+<a href="/register" class="button">register</a>
+<a href="/login" class="button">login</a>
+{% if session.logged_in%} 
+    <a href="/dashboard2" class="button">dashboard</a>
+    <a href="/reservation/{{ session['key'] }}" class="button">reservation</a>
+    <a href="/logout" class="button">logout</a>
+{% endif %}
