@@ -1,10 +1,10 @@
 # Compiler outputs #
 
 # Directories #
-.vscode
-__pychache__
-Lib
+*/.vscode
+*/__pychache__
+*/Lib
 
 # Packages #
 
-*.cfg
+/*.cfg
