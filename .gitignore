@@ -3,7 +3,8 @@
 # Directories #
 .vscode
 __pychache__
+Lib
 
 # Packages #
 
-pyvenv.cfg
+*.cfg
