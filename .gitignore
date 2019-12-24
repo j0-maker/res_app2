@@ -1,0 +1,9 @@
+# Compiler outputs #
+
+# Directories #
+.vscode
+__pychache__
+
+# Packages #
+
+pyenv.cfg
