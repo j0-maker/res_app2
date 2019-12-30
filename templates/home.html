@@ -1,0 +1,22 @@
+<html>
+    <body>
+        <form method="POST" action="/">
+            <input type="number" name="s_r_id">
+            <input type="date" name="s_day">
+            <input type="submit" value="Add" name="add">
+        </form>
+        <form method="POST" action="/">
+            <input type="submit" value="Show" name="show">
+            <input type="submit" value="Hide" name="hide">
+        </form>
+
+        {% if toshow %}
+            <h1>Reservations</h1>
+                {% for i in reservations %}
+                    <p>{{i.s_day}}</p>
+                    <p>{{i.s_R_id}}</p>
+                {% endfor %}
+        {% endif %}
+
+    </body>
+</html>
