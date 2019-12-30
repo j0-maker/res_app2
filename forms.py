@@ -14,10 +14,26 @@ class RegisterForm(Form):
                         validators=[InputRequired(),
                                     Length(min = 1, max = 200)])
     
-    owner_name = StringField("Owner name",
+    owner_fname = StringField("Owner first name",
                         validators=[InputRequired(),
                                     Length(min=2, max=50)])
 
+    owner_lname = StringField("Owner last name",
+                              validators=[InputRequired(),
+                                          Length(min=2, max=50)])
+
+    website = StringField("Website adress",
+                        validators=[InputRequired(),
+                                    Length(min=2, max=100)])
+
+    telephone_number = StringField("Telephone number",
+                        validators=[InputRequired(),
+                                    Length(min=5, max=20)])
+
+    country = StringField("Telephone number",
+                          validators=[InputRequired(),
+                                      Length(min=5, max=20)])
+    
     pwd = PasswordField("Password", 
                         validators=[InputRequired()])
 
