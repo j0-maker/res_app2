@@ -33,8 +33,7 @@ class RegisterForm(Form):
     country = StringField("Telephone number",
                           validators=[InputRequired(),
                                       Length(min=5, max=20)])
-    
-    pwd = PasswordField("Password", 
+                                      Password", 
                         validators=[InputRequired()])
 
     pwd_confirm = PasswordField("Confirm password", 
