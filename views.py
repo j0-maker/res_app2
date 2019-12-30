@@ -3,10 +3,10 @@ from app import app, db
 from models import Restaurants
 from models import Reservations
 from models import ReSettings
-from forms import BookForm
+from forms import *
 
 #libraries-----------------------
-from flask import render_template, request, flash, redirect, session, url_for
+from flask import render_template, request, flash, redirect, session, url_for, logging
 import random
 import string
 from passlib.hash import sha256_crypt
@@ -58,6 +58,7 @@ def index():
 @app.route("/reservation/<string:id>", methods=["GET", "POST"])
 def reservation(id):
     msg = None
+    freespot = None
 
     a = Restaurants.query.all()
     counter = 0
@@ -70,7 +71,7 @@ def reservation(id):
 
     else:
         reservations = Reservations.query.filter(Reservations.s_r_id == id)
-        reservations_check = Reservations.query.filter(Reservations.s_r_id == id).first()
+        #reservations_check = Reservations.query.filter(Reservations.s_r_id == id).first()
 
         restaurant_id = Restaurants.query.filter_by(r_key = id).first()
         freespot_default = ReSettings.query.filter_by(d_r_id = restaurant_id.id).first()
@@ -90,17 +91,28 @@ def reservation(id):
                     print(reservations_check2[-1].s_freespot_total)
                     app.logger.info("ciao")
                     if under_zero_res - int(n_of_people) < 0:
-                        msg = "There are no more spots available"
+                        msg = "There are no more spots available, spots available: "
+                        reservations_check2 = Reservations.query.filter_by(s_r_id=id, s_day=data_day).all()
+                        freespot = reservations_check2[-1].s_freespot_total
                         pass
 
                     else:
                         res_day = Reservations(s_day=request.form.get("sday"), s_freespot = n_of_people, s_freespot_total = under_zero_res - int(n_of_people), s_r_id=id)
                         db.session.add(res_day)
                         db.session.commit()
+                        reservations_check2 = Reservations.query.filter_by(s_r_id=id, s_day=data_day).all()
+                        freespot = reservations_check2[-1].s_freespot_total
+        
+
                 except:
-                    res_day = Reservations(s_day=request.form.get("sday"), s_freespot = n_of_people, s_freespot_total = freespot_default.d_freespot_max - int(n_of_people), s_r_id=id)
-                    db.session.add(res_day)
-                    db.session.commit()
+                    if 20 - int(n_of_people) < 0:
+                        msg = "There are no more spots available, spots available: "
+                        freespot = freespot_default.d_freespot_max
+                        pass
+                    else:
+                        res_day = Reservations(s_day=request.form.get("sday"), s_freespot = n_of_people, s_freespot_total = freespot_default.d_freespot_max - int(n_of_people), s_r_id=id)
+                        db.session.add(res_day)
+                        db.session.commit()
 
             elif 'show' in request.form:
                 return render_template("reservation.html", reservations=reservations, toshow=True, id=id)
@@ -122,7 +134,7 @@ def reservation(id):
                     pass
                 
 
-        return render_template("reservation.html", id=id, msg = msg)
+        return render_template("reservation.html", id=id, msg = msg, freespot = freespot)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -182,40 +194,6 @@ def login():
 
     return render_template("login.html")
 
-"""@app.route("/dashboard", methods=["GET", "POST"])
-def dashboard():
-    #loading all restaurant data with id of the session
-    dataload = ReSettings.query.filter_by(d_r_id = session['id']).all()
-    msg = None
-    if request.method == "POST":
-        #manage POST from hours form and from days form
-        #hours form
-        if "settings" in request.form:
-            open_time = request.form["open-time"]
-            close_time = request.form["close-time"]
-            if open_time < close_time:
-                print("ok")
-                msg = "opening and closing time set!"
-            else:
-                print("not ok")
-                msg = "opening time must be smaller then closing time"
-
-        #days form
-        else:
-            for i in range (1,8):
-                try:
-                    a = request.form[str(i)]
-                    old_close = ReSettings.query.filter_by(d_close = a, d_days = int(i), d_r_id = session["id"]).first()
-                    if old_close.d_close == 0:
-                        old_close.d_close = 1
-                        db.session.commit()
-                    else:
-                        old_close.d_close = 0
-                        db.session.commit()
-                except:
-                    pass
-    return render_template("dashboard.html", dataload=dataload, msg=msg)"""
-
 #Logout
 @app.route('/logout')
 def logout():
@@ -263,72 +241,21 @@ def dashboard2():
         return render_template("dashboard2.html", dataload = dataload, msg = msg)
 
 
+@app.route("/provalog", methods = ["GET", "POST"])
+def provalog():
 
-@app.route("/dashboard3", methods =["GET","POST"])
-@is_logged_in
-def dashboard3():
-        dataload = ReSettings.query.filter_by(d_r_id = 1).first()
-        msg = None
-        print(dataload)
-        days = ["Monday", "Tuesdasy", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    form = RegisterForm()
 
-        if request.method == "POST":
-            status_change = request.form.get("status_change")
-            plinio = request.form.get("plinio")
-            print(status_change)
-
-            """if status == "False":
-                status = True
-            else:
-                status = False
-
-           print(status_change)
-            
-
-            old_status = ReSettings.query.filter_by(d_days = day, d_close = status, d_r_id = session["id"]).first()
-
-            print(old_status.d_close)
-            a = not status
-
-            old_status.d_close = a
-
-            db.session.commit()"""
-
+    if form.validate_on_submit():
+        name = form.username.data
+        restaurant_address = form.restaurant_address.data
+        restaurant_name = form.restaurant_name.data
+        owner_name = form.owner_name.data
+        pwd = sha256_crypt.hash(form.pwd.data)
         
-        """if request.method=="POST":
-
-            if "settings_hours" in request.form:
+        print(name, restaurant_address, restaurant_name, owner_name, pwd)
     
-                open_time = request.form["open_time"]
-                close_time = request.form["close_time"]
-                day_hours = request.form["day_hours"]
-                if open_time < close_time:
-                    old_time = ReSettings.query.filter_by(d_days = day_hours, d_r_id = session["id"]).first()
-                    old_time.d_open_time = open_time
-                    old_time.d_close_time = close_time
-                    db.session.commit()
-
-                    print("ok")
-                    msg = "opening and closing time set!"
-                else:
-                    print("not ok")
-                    msg = "opening time must be smaller then closing time"
-
-            else:
-                get_status = request.form.getlist("day")
-                bool_value_for_db_query = get_bool(get_status[1])
-                print(bool_value_for_db_query)
-                old_close_status = ReSettings.query.filter_by(d_days = int(get_status[0]), d_close = bool_value_for_db_query, d_r_id = session["id"]).first()
-                old_close_status.d_close = not bool_value_for_db_query
-                print(not bool_value_for_db_query)
-                db.session.commit()
-                print(get_status)"""
-
-        return render_template("dashboard3.html", dataload = dataload, msg = msg, days = days)
-
-
-
-
+    return render_template("provalog.html", form = form)
 
 
 

@@ -4,9 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 
 #initializing flask app--------------------------
 app = Flask(__name__)
+heroku = False
 
 #load config file--------------------------------
-app.config.from_pyfile('config.py')
+if heroku == True:
+    app.config.from_pyfile('config.py')
+else:
+    app.config.from_pyfile('config2.py')
 
 #set db------------------------------------------
 db = SQLAlchemy(app)
