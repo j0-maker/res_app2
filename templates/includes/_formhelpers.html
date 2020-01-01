@@ -1,6 +1,7 @@
 {% macro render_field(field) %}
 
     {{ field.label }}
+    {{ field.csrf_token }}
     {{ field(**kwargs)|safe }}
 
     {% if field.errors %}

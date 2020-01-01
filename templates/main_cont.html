@@ -1,0 +1,220 @@
+{% extends 'layout.html' %}
+
+
+
+{% block body %} 
+
+<div style="position: relative; background-color: rgb(107, 141, 152); height:430px; width: 90%; margin: 0 auto; margin-top: 2rem;"  class="container-main">
+    <div style="z-index: 1; position: absolute; background-color:gray" class="cont">
+    <p>
+        Monday-{{ dataload[0].d_days }}
+    </p>
+        <ul>
+            {% if dataload[0].d_close == 0 %}
+            <li>
+                <p>Closed</p>
+            </li>
+            {% else %}
+            <li>
+                <p>Open</p>
+            </li>
+            {% endif %}
+        </ul>
+            <!-- days form open/close-->
+            <form action="" method="POST">
+                <input type="hidden" name="day" value="{{ dataload[0].d_days }}">
+                <input type="hidden" name="day" value="{{ not dataload[0].d_close }}">
+                <input type="submit" name="submit_to_db" value="Change">
+            </form>
+            <!-- hours form-->
+                <form method="POST" action="">
+                    <p>set reservation opening and closing time for MONDAY</p>
+                    <input type="hidden" name="day_hours" value="{{ dataload[0].d_days }}">
+                    <label for="open-time">set opening time</label>
+                    <input type="time" name="open_time" value="{{ dataload[0].d_open_time }}" step="1800" min="19:30" max="22:30">
+                    <label for="close-time">set closing time</label>
+                    <input type="time" name="close_time" value="{{ dataload[0].d_close_time }}" step="1800" min="19:30" max="23:30">
+                    <input type="submit" name="settings_hours" value="SET!">
+                </form>
+    </div>
+    <div style="z-index: 0; position: absolute; background-color: gray" class="cont">
+        <p>
+            Tuesday-{{ dataload[1].d_days }}
+        </p>
+        <ul>
+            {% if dataload[1].d_close == 0 %}
+            <li>
+                <p>Closed</p>
+            </li>
+            {% else %}
+            <li>
+                <p>Open</p>
+            </li>
+            {% endif %}
+        </ul>
+            <!-- days form open/close-->
+            <form action="" method="POST">
+                <input type="hidden" name="day" value="{{ dataload[1].d_days }}">
+                <input type="hidden" name="day" value="{{ not dataload[1].d_close }}">
+                <input type="submit" name="submit_to_db" value="Change">
+            </form>
+            <!-- hours form-->
+                <form method="POST" action="">
+                    <p>set reservation opening and closing time for MONDAY</p>
+                    <input type="hidden" name="day_hours" value="{{ dataload[1].d_days }}">
+                    <label for="open-time">set opening time</label>
+                    <input type="time" name="open_time" value="{{ dataload[1].d_open_time }}" step="1800" min="19:30" max="22:30">
+                    <label for="close-time">set closing time</label>
+                    <input type="time" name="close_time" value="{{ dataload[1].d_close_time }}" step="1800" min="19:30" max="23:30">
+                    <input type="submit" name="settings_hours" value="SET!">
+                </form>
+    </div>
+    <div style="z-index: 0; position: absolute; background-color: gray" class="cont">
+        <p>
+            Wednesday-{{ dataload[2].d_days }}
+        </p>
+        <ul>
+            {% if dataload[2].d_close == 0 %}
+            <li>
+                <p>Closed</p>
+            </li>
+            {% else %}
+            <li>
+                <p>Open</p>
+            </li>
+            {% endif %}
+        </ul>
+            <!-- days form open/close-->
+            <form action="" method="POST">
+                <input type="hidden" name="day" value="{{ dataload[2].d_days }}">
+                <input type="hidden" name="day" value="{{ not dataload[2].d_close }}">
+                <input type="submit" name="submit_to_db" value="Change">
+            </form>
+            <!-- hours form-->
+                <form method="POST" action="">
+                    <p>set reservation opening and closing time for MONDAY</p>
+                    <input type="hidden" name="day_hours" value="{{ dataload[2].d_days }}">
+                    <label for="open-time">set opening time</label>
+                    <input type="time" name="open_time" value="{{ dataload[2].d_open_time }}" step="1800" min="19:30" max="22:30">
+                    <label for="close-time">set closing time</label>
+                    <input type="time" name="close_time" value="{{ dataload[2].d_close_time }}" step="1800" min="19:30" max="23:30">
+                    <input type="submit" name="settings_hours" value="SET!">
+                </form>
+    </div>
+    <div style="z-index: 0; position: absolute; background-color: gray" class="cont">
+        <p>
+            Thursday-{{ dataload[3].d_days }}
+        </p>
+        <ul>
+            {% if dataload[3].d_close == 0 %}
+            <li>
+                <p>Closed</p>
+            </li>
+            {% else %}
+            <li>
+                <p>Open</p>
+            </li>
+            {% endif %}
+        </ul>
+            <!-- days form open/close-->
+            <form action="" method="POST">
+                <input type="hidden" name="day" value="{{ dataload[3].d_days }}">
+                <input type="hidden" name="day" value="{{ not dataload[3].d_close }}">
+                <input type="submit" name="submit_to_db" value="Change">
+            </form>
+            <!-- hours form-->
+                <form method="POST" action="">
+                    <p>set reservation opening and closing time for MONDAY</p>
+                    <input type="hidden" name="day_hours" value="{{ dataload[3].d_days }}">
+                    <label for="open-time">set opening time</label>
+                    <input type="time" name="open_time" value="{{ dataload[3].d_open_time }}" step="1800" min="19:30" max="22:30">
+                    <label for="close-time">set closing time</label>
+                    <input type="time" name="close_time" value="{{ dataload[3].d_close_time }}" step="1800" min="19:30" max="23:30">
+                    <input type="submit" name="settings_hours" value="SET!">
+                </form>
+    </div>
+    <div style="z-index: 0; position: absolute; background-color: gray" class="cont">
+        <p>
+            Friday-{{ dataload[4].d_days }}
+        </p>
+    </div>
+    <div style="z-index: 0; position: absolute; background-color: gray" class="cont">
+        <p>
+            Saturday-{{ dataload[5].d_days }}
+        </p>
+    </div>
+    <div style="z-index: 0; position: absolute; background-color: gray" class="cont">
+        <p>
+            Sunday-{{ dataload[6].d_days }}
+        </p>
+    </div>
+    <div class="spacer">
+
+    </div>
+    <div style="margin: 0 auto; width: 100%; text-align: center;">
+        <button id="previous" style="margin-right: 60%;">previous</button>
+        <button id="next">next</button>
+    </div s>
+
+
+   
+</div>
+
+<script type="text/javascript">
+
+    active_el = 0;
+    active_el_max = 6;
+
+    a = document.querySelectorAll(".cont");
+    b = document.querySelector("#next");
+    c = document.querySelector("#previous");
+
+    focus_el = a[active_el];
+
+    b.addEventListener("click", function(){
+
+        a.forEach(function(i, index, array){
+
+            z_index_value = i.style.zIndex
+
+            if (z_index_value == 1){
+                if (active_el + 1 == 7){
+                    active_el = 0
+                    i.style.zIndex = 0
+                }
+                else{
+                    active_el ++
+                    i.style.zIndex = 0
+                }
+            }
+        })   
+        focus_el = a[active_el]
+        focus_el.style.zIndex = 1
+    })
+
+    c.addEventListener("click", function () {
+
+            a.forEach(function (i, index, array) {
+
+                z_index_value = i.style.zIndex
+
+                if (z_index_value == 1) {
+                    if (active_el + -1 == -1) {
+                        active_el = 6
+                        i.style.zIndex = 0
+                    }
+                    else {
+                        active_el--
+                        i.style.zIndex = 0
+                    }
+                }
+            })
+            focus_el = a[active_el]
+            focus_el.style.zIndex = 1
+        })
+</script>
+
+
+
+
+{% endblock body %}
