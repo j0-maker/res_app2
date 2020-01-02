@@ -136,6 +136,7 @@ def reservation(id):
 
         return render_template("reservation.html", id=id, msg = msg, freespot = freespot)
 
+"""
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -160,6 +161,7 @@ def register():
         db.session.commit()
 
     return render_template("register.html")
+"""
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -241,21 +243,89 @@ def dashboard2():
         return render_template("dashboard2.html", dataload = dataload, msg = msg)
 
 
-@app.route("/provalog", methods = ["GET", "POST"])
-def provalog():
+@app.route("/register", methods = ["GET", "POST"])
+def register():
 
     form = RegisterForm()
 
-    if form.validate_on_submit():
-        name = form.username.data
+    if request.method == "POST" and form.validate_on_submit():
+        username = form.username.data
         restaurant_address = form.restaurant_address.data
         restaurant_name = form.restaurant_name.data
-        owner_name = form.owner_name.data
+        owner_fname = form.owner_fname.data
+        owner_lname = form.owner_lname.data
+        website = form.website.data
+        email = form.email.data
+        telephone_number = form.telephone_number.data
+        country = form.country.data
         pwd = sha256_crypt.hash(form.pwd.data)
+        new_key = randomString(15)
+
+        print(username, restaurant_name, restaurant_address, owner_lname, owner_fname, website, email, telephone_number, country, pwd, new_key)
+
+        new_user = Restaurants(r_username=username, r_password=pwd, r_name=restaurant_name,
+                                r_adress=restaurant_address, r_ownername=owner_fname, r_ownerlastname=owner_lname,
+                                r_country=country, r_website=website, r_telephone=telephone_number,
+                                r_email=email, r_key=new_key)
+        db.session.add(new_user)
+        #db.session.commit()
+        app.logger.info("new user registered")
+        ###add basic restaurant settings
+        rest_name = Restaurants.query.filter_by(r_username=username).first()
+        rest_id = rest_name.id
+
+        for i in range(1,8):
+            new_day = ReSettings(d_days = i, d_close = 1, d_open_time = "19:30", d_close_time = "23:30", d_freespot_max = 20, d_r_id = rest_id)
+            db.session.add(new_day)
         
-        print(name, restaurant_address, restaurant_name, owner_name, pwd)
+        db.session.commit()
+    print(form.errors)
+
     
     return render_template("provalog.html", form = form)
 
+
+@app.route("/main_cont")
+@is_logged_in
+def main_cont():
+
+    dataload = ReSettings.query.filter_by(d_r_id = session["id"])
+    dataload = dataload.order_by(ReSettings.id)
+    print(dataload)
+
+    return render_template("main_cont.html", dataload=dataload)
+
+
+@app.route("/login2", methods=["GET", "POST"])
+def login2():
+    form = LoginForm()
+    if request.method == "POST" and form.validate_on_submit():
+        username = form.username.data
+        password_candidate = form.pwd.data
+
+        get_user = Restaurants.query.filter_by(r_username=username).first()
+
+        if get_user != None:
+            password = get_user.r_password
+
+            if sha256_crypt.verify(password_candidate, password):
+                session["logged_in"] = True
+                session["username"] = get_user.r_username
+                session["id"] = get_user.id
+                session["key"] = get_user.r_key
+
+                app.logger.info("logged in!")
+
+                return redirect(url_for("dashboard2"))
+            else:
+                error = "invalid"
+                app.logger.info("PASSWORD WRONG")
+                return render_template("login2.html", error = error, form=form)
+        else:
+            error = "Invalid"
+            app.logger.info("USER NOT FOUND")
+            return render_template("login2.html", error = error, form=form)
+
+    return render_template("login2.html", form=form)
 
 

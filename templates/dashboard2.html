@@ -1,4 +1,4 @@
-{% include 'layout.html' %}
+{% extends 'layout.html' %}
 {% block body %}
 <h1>DASHBOARD</h1>
 {% if msg %}
@@ -8,7 +8,6 @@
 {% endif %}
 {% for data in dataload %}
     {% if data.d_days == 1 %}
-    <div class="setting_container">
         <ul>
             <li>
             <p>MONDAY</p>
@@ -39,8 +38,6 @@
                     <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
                     <input type="submit" name="settings_hours" value="SET!">
                 </form>
-        
-    </div>
 
     
     {% endif %}

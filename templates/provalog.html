@@ -2,25 +2,51 @@
 
 {% block body %}
 <div class="container">
-    <h1>Register</h1>
+    <h1>REGISTRATION</h1>
     {% from "includes/_formhelpers.html" import render_field %}
     <form method='POST'>
         <div>
+            {{ form.csrf_token }}
             {{ render_field(form.username, class_="form-control") }}
         </div>
         <div>
+            {{ form.csrf_token }}
             {{ render_field(form.restaurant_address, class_="form-control") }}
         </div>
         <div>
+            {{ form.csrf_token }}
             {{ render_field(form.restaurant_name, class_="form-control") }}
         </div>
         <div>
-            {{ render_field(form.owner_name, class_="form-control") }}
+            {{ form.csrf_token }}
+            {{ render_field(form.owner_fname, class_="form-control") }}
         </div>
         <div>
+            {{ form.csrf_token }}
+            {{ render_field(form.owner_lname, class_="form-control") }}
+        </div>
+        <div>
+            {{ form.csrf_token }}
+            {{ render_field(form.country, class_="form-control") }}
+        </div>
+        <div>
+            {{ form.csrf_token }}
+            {{ render_field(form.website, class_="form-control") }}
+        </div>
+        <div>
+            {{ form.csrf_token }}
+            {{ render_field(form.email, class_="form-control") }}
+        </div>
+        <div>
+            {{ form.csrf_token }}
+            {{ render_field(form.telephone_number, class_="form-control") }}
+        </div>
+        <div>
+            {{ form.csrf_token }}
             {{ render_field(form.pwd, class_="form-control") }}
         </div>
         <div>
+            {{ form.csrf_token }}
             {{ render_field(form.pwd_confirm, class_="form-control") }}
         </div>
         <p><input type="submit" value="Submit"></p>

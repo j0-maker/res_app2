@@ -85,6 +85,7 @@ a#register.btn {
   list-style: none;
 }
 
+<<<<<<< HEAD
 .navbar a:hover {
   background-color: rgb(37, 168, 185);
   color: #fff;
@@ -150,4 +151,20 @@ a#register.btn {
   .open-slide {
     display: none;
   }
+=======
+.cont  {
+    width: 80%;
+    height: 360px; 
+    top: 20px;
+    left: 10%;
+    font-size: 20px;
+}
+
+.spacer {
+
+    width: 100%;
+    height: 360px;
+    padding-top: 30px;
+
+>>>>>>> 354fc3642be3fe721c372f58cc43910f7b92e490
 }

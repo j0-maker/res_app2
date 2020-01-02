@@ -10,7 +10,12 @@ class Restaurants(db.Model):
     r_name = db.Column(db.String(50), nullable = False)
     r_adress = db.Column(db.String(100), nullable = False)
     r_ownername = db.Column(db.String(50), nullable = False)
+    r_ownerlastname = db.Column(db.String(50), nullable = False)
+    r_country = db.Column(db.String(20), nullable = False)
     r_key = db.Column(db.String(15), nullable = False, unique= True)
+    r_website = db.Column(db.String(100), nullable = False)
+    r_email = db.Column(db.String(50), nullable = False)
+    r_telephone = db.Column(db.String(30), nullable = False)
     r_reservations = db.relationship('Reservations', backref = 'restaurant')
     r_dsettings = db.relationship('ReSettings', backref = 'restaurant')
     
