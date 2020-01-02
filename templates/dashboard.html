@@ -1,0 +1,145 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+    <h1>DASHBOARD</h1>
+    {% for data in dataload %}
+        {% if data.d_days == 1 %}
+            <p>MONDAY</p>
+            {% if data.d_close == 0 %}
+
+                <form method="POST" action="">
+                    <input type="hidden" name="1" value="0">
+                    <input type="checkbox" onchange="this.form.submit()">
+                </form>
+
+            {% elif data.d_close == 1 %}
+    
+                <form method="POST" action="">
+                    <input type="hidden" name="1" value="1">
+                    <input type="checkbox" onchange="this.form.submit()" checked>
+                </form>
+            
+            {% endif %}
+
+            <form method = "POST" action="">
+                <h4>set reservation opening and closing time for MONDAY</h4>
+                <label for="open-time">set opening time</label>
+                <input type="time" name="open-time" value="19:30" step="1800" min="19:30" max="22:30">
+                <label for="close-time">set closing time</label>
+                <input type="time" name="close-time" value="23:30" step="1800" min="19:30" max="23:30">
+                <input type="submit" name = "settings" value="SET!">
+            </form>
+            {% if msg %}
+
+                <p>{{ msg }}</p>
+            
+            {% endif %}
+
+        {% elif data.d_days == 2 %}
+            <p>TUESDAY</p>
+            {% if data.d_close == 0 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="2" value="0">
+                    <input type="checkbox" onchange="this.form.submit()">
+                </form>
+            {% elif data.d_close == 1 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="2" value="1">
+                    <input type="checkbox" onchange="this.form.submit()" checked>
+                </form>
+            
+            {% endif %}
+        {% elif data.d_days == 3 %}
+            <p>WEDNESDAY</p>
+            {% if data.d_close == 0 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="3" value="0">
+                    <input type="checkbox" onchange="this.form.submit()">
+                </form>
+            {% elif data.d_close == 1 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="3" value="1">
+                    <input type="checkbox" onchange="this.form.submit()" checked>
+                </form>
+            
+            {% endif %}
+        {% elif data.d_days == 4 %}
+            <p>THURSDAY</p>
+            {% if data.d_close == 0 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="4" value="0">
+                    <input type="checkbox" onchange="this.form.submit()">
+                </form>
+
+            {% elif data.d_close == 1 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="4" value="1">
+                    <input type="checkbox" onchange="this.form.submit()" checked>
+                </form>
+            
+            {% endif %}
+        {% elif data.d_days == 5 %}
+            <p>FRIDAY</p>
+            {% if data.d_close == 0 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="5" value="0">
+                    <input type="checkbox" onchange="this.form.submit()">
+                </form>
+            {% elif data.d_close == 1 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="5" value="1">
+                    <input type="checkbox" onchange="this.form.submit()" checked>
+                </form>
+            
+            {% endif %}
+        {% elif data.d_days == 6 %}
+            <p>SATURDAY</p>
+            {% if data.d_close == 0 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="6" value="0">
+                    <input type="checkbox" onchange="this.form.submit()">
+                </form>
+
+            {% elif data.d_close == 1 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="6" value="1">
+                    <input type="checkbox" onchange="this.form.submit()" checked>
+                </form>
+            
+            {% endif %}
+        {% elif data.d_days == 7 %}
+            <p>SUNDAY</p>
+            {% if data.d_close == 0 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="7" value="0">
+                    <input type="checkbox" onchange="this.form.submit()">
+                </form>
+
+            {% elif data.d_close == 1 %}
+            
+                <form method="POST" action="">
+                    <input type="hidden" name="7" value="1">
+                    <input type="checkbox" onchange="this.form.submit()" checked>
+                </form>
+            
+            {% endif %}
+        {% endif%}
+
+        
+    {% endfor %}
+
+
+    
+
+{% endblock body %}
