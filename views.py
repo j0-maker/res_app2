@@ -1,8 +1,6 @@
 #modules-------------------------
 from app import app, db
-from models import Restaurants
-from models import Reservations
-from models import ReSettings
+from models import *
 from forms import *
 
 #libraries-----------------------
@@ -11,6 +9,7 @@ import random
 import string
 from passlib.hash import sha256_crypt
 from functools import wraps
+import datetime
 
 ### functions
 def randomString(stringLength):
@@ -327,5 +326,308 @@ def login2():
             return render_template("login2.html", error = error, form=form)
 
     return render_template("login2.html", form=form)
+
+
+@app.route("/reservations/<string:id>/", methods=["GET", "POST"])
+def reservations(id):
+    msg = None
+    freespot = None
+
+    a = Restaurants.query.all()
+    counter = 0
+    for i in a:
+        if id == i.r_key:
+            counter += 1
+
+    if counter == 0:
+        return render_template("error.html")
+
+    else:
+        reservations = Reservations.query.filter(Reservations.s_r_id == id)
+        #reservations_check = Reservations.query.filter(Reservations.s_r_id == id).first()
+
+        restaurant_id = Restaurants.query.filter_by(r_key = id).first()
+        freespot_default = ReSettings.query.filter_by(d_r_id = restaurant_id.id).first()
+
+        print(freespot_default.d_freespot_max)
+
+        for i in reservations:
+            print(i.s_r_id)
+            
+        if request.method == "POST":
+            if 'add' in request.form:
+                data_day = request.form["sday"]
+                n_of_people = request.form["n_of_people"]
+                
+                try:
+                    reservations_check2 = Reservations.query.filter_by(s_r_id = id , s_day = data_day).all()
+                    under_zero_res = reservations_check2[-1].s_freespot_total
+                    print(reservations_check2[-1].s_freespot_total)
+                    app.logger.info("ciao")
+                    if under_zero_res - int(n_of_people) < 0:
+                        msg = "There are no more spots available, spots available: "
+                        reservations_check2 = Reservations.query.filter_by(s_r_id=id, s_day=data_day).all()
+                        freespot = reservations_check2[-1].s_freespot_total
+                        pass
+
+                    else:
+                        res_day = Reservations(s_day=request.form.get("sday"), s_freespot = n_of_people, s_freespot_total = under_zero_res - int(n_of_people), s_r_id=id)
+                        db.session.add(res_day)
+                        db.session.commit()
+                        reservations_check2 = Reservations.query.filter_by(s_r_id=id, s_day=data_day).all()
+                        freespot = reservations_check2[-1].s_freespot_total
+        
+
+                except:
+                    if 20 - int(n_of_people) < 0:
+                        msg = "There are no more spots available, spots available: "
+                        freespot = freespot_default.d_freespot_max
+                        pass
+                    else:
+                        res_day = Reservations(s_day=request.form.get("sday"), s_freespot = n_of_people, s_freespot_total = freespot_default.d_freespot_max - int(n_of_people), s_r_id=id)
+                        db.session.add(res_day)
+                        db.session.commit()
+                
+
+        return render_template("reservation2.html", id=id, msg = msg, freespot = freespot)
+
+
+
+@app.route("/reservations3/<string:id>/", methods=["GET", "POST"])
+def reservations3(id):
+
+    msg = None
+
+    #check if route exists--------------
+    a = Restaurants.query.all()
+
+    counter = 0
+    for i in a:
+        if id == i.r_key:
+            counter += 1
+
+    if counter == 0:
+        return render_template("error.html")
+
+    #if exists render else:-------------
+
+    else:
+            
+        if request.method == "POST":
+            if 'set_reservation' in request.form:
+                data_day = request.form["sday"]
+                n_of_people = int(request.form["n_of_people"])
+                booking_time = request.form["booking_time"]
+
+                day_in_numbers = datetime.datetime.strptime(data_day, "%Y-%m-%d").weekday()
+
+                #find id in time_range from actual time "19:00" is equal to 1, "19:30" to 2 ecc...
+                find_time_range_id = Time_range.query.filter_by(t_time = booking_time).first()
+                time_range_id = find_time_range_id.id
+
+                #retrieve freespot total_for given day using day_in_numbers
+                freespot_total_day = Restaurants.query.filter_by(r_key=id).first()
+                freespot_total_day = freespot_total_day.id
+                freespot_total_day = ReSettings.query.filter_by(d_r_id=freespot_total_day).all()
+                freespot_total_day = freespot_total_day[day_in_numbers].d_freespot_max
+
+                print(time_range_id)
+
+                find_spot_hour_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day).first()
+                try:
+                    find_spot_hour_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day).first()
+                except:
+                    print("index out of range, not considered")
+
+                if not find_spot_hour_frst and not find_spot_hour_scnd:
+                    if freespot_total_day - n_of_people < 0:
+                        app.logger.info("max reached")
+                        pass
+                    else:
+                        #make new reservation if both "ranges" return none
+                        new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
+                        db.session.add(new_reservation)
+                        #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
+                        new_spot_frst = AvailableSpot(t_restaurant=id, t_time_id=time_range_id, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
+                        new_spot_scnd = AvailableSpot(t_restaurant=id, t_time_id=time_range_id + 1, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
+                        db.session.add(new_spot_frst)
+                        db.session.add(new_spot_scnd)
+
+                elif find_spot_hour_frst and find_spot_hour_scnd:
+                    #get freespot from both ranges
+                    get_available_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day, t_restaurant=id).first()
+                    get_available_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day, t_restaurant=id).first()
+                    if get_available_frst.t_freespot - n_of_people < 0 or get_available_scnd.t_freespot - n_of_people < 0:
+                        app.logger.info("max reached")
+                        pass
+                    else:
+                        new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
+                        db.session.add(new_reservation)
+                        #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
+                        get_available_frst.t_freespot = get_available_frst.t_freespot - n_of_people
+                        get_available_scnd.t_freespot = get_available_scnd.t_freespot - n_of_people
+
+                elif find_spot_hour_frst and not find_spot_hour_scnd:
+                    get_available_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day, t_restaurant=id).first()
+                    if get_available_frst.t_freespot - n_of_people < 0:
+                        app.logger.info("max reached")
+                        pass
+                    else:
+                        new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
+                        db.session.add(new_reservation)
+                        #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
+                        get_available_frst.t_freespot = get_available_frst.t_freespot - n_of_people
+                        new_spot_scnd = AvailableSpot(t_restaurant=id, t_time_id=time_range_id + 1, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
+                        db.session.add(new_spot_scnd)
+
+                elif not find_spot_hour_frst and find_spot_hour_scnd:
+                    get_available_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day, t_restaurant=id).first()
+                    if get_available_scnd.t_freespot - n_of_people < 0:
+                        app.logger.info("max reached")
+                        pass
+                    else:
+                        new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
+                        db.session.add(new_reservation)
+                        #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
+                        get_available_scnd.t_freespot = get_available_scnd.t_freespot - n_of_people
+                        new_spot_frst = AvailableSpot(t_restaurant=id, t_time_id=time_range_id, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
+                        db.session.add(new_spot_frst)
+            
+            
+            
+            
+                db.session.commit()
+
+
+
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                #check_if_first_reservation = Reservations.query.filter_by(s_day = data_day, s_r_id = id).all()
+
+                """if not check_if_first_reservation:
+                    print("first reservation")
+                    check_basic_freespot = Restaurants.query.filter_by(r_key = id).first()
+                    tot_basic_freespot = ReSettings.query.filter_by(d_r_id = check_basic_freespot.id).all()
+                    tot_freespot_ongivenday = tot_basic_freespot[day_in_numbers].d_freespot_max
+
+                    add_reservation = Reservations(s_day=request.form.get("sday"), s_npeople = n_of_people, s_time = booking_time, s_r_id=id)
+                    db.session.add(add_reservation)
+
+                    find_time_range_id = Time_range.query.filter_by(t_time = booking_time)
+                    time_range_id = find_time_range_id[0].id
+                    #-------------------------------------------
+                    find_date_id = add_reservation
+                    date_id = find_date_id.s_day
+                    #..............................
+
+                    add_spot = AvailableSpot(t_restaurant = id, t_time_id = time_range_id, t_date_id = date_id, t_freespot = tot_freespot_ongivenday - int(find_date_id.s_npeople))
+                    db.session.add(add_spot)
+                    if time_range_id == 10:
+                        pass
+                    else:
+                        add_spot2 = AvailableSpot(t_restaurant = id, t_time_id = time_range_id + 1, t_date_id = date_id, t_freespot = tot_freespot_ongivenday - int(find_date_id.s_npeople))
+                        db.session.add(add_spot2)
+
+
+                    #get_all_data_for_a_day = AvailableSpot.query.filter_by(t_restaurant = id, t_date_id = date_id).all()
+                else:
+                    find_time_range_id = Time_range.query.filter_by(t_time = booking_time)
+                    time_range_id = find_time_range_id[0].id
+
+                    find_spot = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day).first()
+                    find_spot2 = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day).first()
+
+                    tot = [find_spot, find_spot2]
+
+                    print(tot)
+
+                    ------stop
+
+                    if find_spot:
+                        if find_spot.t_freespot - int(n_of_people) < 0:
+                            print("budda")
+                            pass
+                        else:
+                            check_basic_freespot = Restaurants.query.filter_by(r_key = id).first()
+                            tot_basic_freespot = ReSettings.query.filter_by(d_r_id = check_basic_freespot.id).all()
+                            tot_freespot_ongivenday = tot_basic_freespot[day_in_numbers].d_freespot_max
+                            add_reservation = Reservations(s_day=request.form.get("sday"), s_npeople = n_of_people, s_time = booking_time, s_r_id=id)
+                            db.session.add(add_reservation)
+
+                            find_time_range_id = Time_range.query.filter_by(t_time = booking_time)
+                            time_range_id = find_time_range_id[0].id
+                            #-------------------------------------------
+                            find_date_id = add_reservation
+                            date_id = find_date_id.s_day
+                            find_spot.t_freespot -= int(n_of_people)
+                            print("freespot")
+                            print(find_spot.t_freespot)
+                            print("--------")
+                        
+                    else:
+                        check_basic_freespot = Restaurants.query.filter_by(r_key = id).first()
+                        tot_basic_freespot = ReSettings.query.filter_by(d_r_id = check_basic_freespot.id).all()
+                        tot_freespot_ongivenday = tot_basic_freespot[day_in_numbers].d_freespot_max
+                        add_reservation = Reservations(s_day=request.form.get("sday"), s_npeople = n_of_people, s_time = booking_time, s_r_id=id)
+                        db.session.add(add_reservation)
+
+                        find_time_range_id = Time_range.query.filter_by(t_time = booking_time)
+                        time_range_id = find_time_range_id[0].id
+                        #-------------------------------------------
+                        find_date_id = add_reservation
+                        date_id = find_date_id.s_day
+                        add_spot = AvailableSpot(t_restaurant = id, t_time_id = time_range_id + 1, t_date_id = date_id, t_freespot = tot_freespot_ongivenday - int(find_date_id.s_npeople))
+                        db.session.add(add_spot)
+                    
+                    if find_spot2:
+                        if find_spot2.t_freespot - int(n_of_people) < 0:
+                            print("budda")
+                            pass
+                        else:    
+                            find_spot2.t_freespot -= int(n_of_people)
+                            print("freespot 2")
+                            print(find_spot2.t_freespot)
+                            print("--------")
+                    else:
+                        check_basic_freespot = Restaurants.query.filter_by(r_key = id).first()
+                        tot_basic_freespot = ReSettings.query.filter_by(d_r_id = check_basic_freespot.id).all()
+                        tot_freespot_ongivenday = tot_basic_freespot[day_in_numbers].d_freespot_max
+                        add_reservation = Reservations(s_day=request.form.get("sday"), s_npeople = n_of_people, s_time = booking_time, s_r_id=id)
+                        db.session.add(add_reservation)
+
+                        find_time_range_id = Time_range.query.filter_by(t_time = booking_time)
+                        time_range_id = find_time_range_id[0].id
+                        #-------------------------------------------
+                        find_date_id = add_reservation
+                        date_id = find_date_id.s_day
+                        add_spot2 = AvailableSpot(t_restaurant = id, t_time_id = time_range_id + 1, t_date_id = date_id, t_freespot = tot_freespot_ongivenday - int(find_date_id.s_npeople))
+                        db.session.add(add_spot2)"""
+
+
+
+
+                db.session.commit()
+
+
+
+
+                #print(data_day, n_of_people, booking_time)
+                
+
+        return render_template("reservation3.html", id=id, msg = msg)
 
 

@@ -1,0 +1,11 @@
+{% block body %}
+
+<form method="POST" action="">
+    <input type="date" name="sday" required>
+    <input type="number" step="1" name="n_of_people" required>
+    <input type="time" name="booking_time" value="19:30" step="1800" min="19:30" max="22:30" required>
+
+    <input type="submit" name="set_reservation" value="Book">
+</form>
+
+{% endblock body %}

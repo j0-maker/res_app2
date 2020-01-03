@@ -1,0 +1,15 @@
+{% block body %}
+
+    <form method="POST" action="">
+        <input type="date" name="sday">
+        <input type="number" step="1" name="n_of_people">
+        <input type="submit" value="Add" name="add">
+    </form>
+
+    {% if msg %}
+
+        <p>{{ msg }} {{ freespot }} </p>
+    
+    {% endif %}
+
+{% endblock body %}
