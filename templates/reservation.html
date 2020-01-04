@@ -1,6 +1,9 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+<!-- <section style="padding-top: 70px;">
+
+
     <form method="POST" action="">
         <input type="date" name="sday">
         <input type="number" step="1" name="n_of_people">
@@ -13,22 +16,78 @@
 
     {% if msg %}
 
-        <p>{{ msg }} {{ freespot }} </p>
-    
+    <p>{{ msg }} {{ freespot }} </p>
+
     {% endif %}
 
     {% if toshow %}
-        <h1>Reservations</h1>
-        {% for i in reservations %}
-            <p>{{i.s_day}}</p>
-            <p>n. of people: {{ i.s_freespot }}</p>
-            <form method = "POST">
-                <input type="hidden" name ="get_id_to_delete" value ="{{ i.s_day }}">
-                <input type="hidden" name = "get_id_to_delete" value="{{ i.id }}">
-                <input type="submit" name = "delete" value="Delete!">
-            </form>
-            <p>{{i.s_r_id}}</p>
-        {% endfor %}
+    <h1>Reservations</h1>
+    {% for i in reservations %}
+    <p>{{i.s_day}}</p>
+    <p>n. of people: {{ i.s_freespot }}</p>
+    <form method="POST">
+        <input type="hidden" name="get_id_to_delete" value="{{ i.s_day }}">
+        <input type="hidden" name="get_id_to_delete" value="{{ i.id }}">
+        <input type="submit" name="delete" value="Delete!">
+    </form>
+    <p>{{i.s_r_id}}</p>
+    {% endfor %}
     {% endif %}
+</section> -->
 
+<section id="reservation">
+    <div class="container">
+        <h1 class="res-heading">RESERVATION</h1>
+        <div id="guest">
+            <h3>People:</h3>
+            <div class="guest-container">
+                <span value="1" class="guest-number">1</span>
+                <span value="2" class="guest-number">2</span>
+                <span value="3" class="guest-number">3</span>
+                <span value="4" class="guest-number">4</span>
+                <span value="5" class="guest-number">5</span>
+                <span value="6" class="guest-number">6</span>
+                <span value="7" class="guest-number">7</span>
+                <span value="8" class="guest-number">8</span>
+                <span value="9" class="guest-number">9</span>
+                <span value="10" class="guest-number">10</span>
+                <span value="11" class="guest-number">11</span>
+                <span value="12" class="guest-number">12</span>
+                <span value="13" class="guest-number">13</span>
+                <span value="14" class="guest-number">14</span>
+                <span value="15" class="guest-number">15</span>
+                <span value="16" class="guest-number">16</span>
+                <span value="17" class="guest-number">17</span>
+                <span value="18" class="guest-number">18</span>
+                <span value="19" class="guest-number">19</span>
+                <span value="20" class="guest-number">20</span>
+            </div>
+        </div>
+
+        <div id="calendar">
+            <h3>Choose a day:</h3>
+            <div class="calendar-container">
+                <input class="calendar-html" type="date" />
+            </div>
+        </div>
+        <div id="hours">
+            <h3>Choose a time:</h3>
+            <div class="hour-container">
+                <span value="19:00" class="item">19:00</span>
+                <span value="19:30" class="item">19:30</span>
+                <span value="20:00" class="item">20:00</span>
+                <span value="20:30" class="item">20:30</span>
+                <span value="21:00" class="item">21:00</span>
+                <span value="21:30" class="item">21:30</span>
+                <span value="22:00" class="item">22:00</span>
+                <span value="22:30" class="item">22:30</span>
+                <span value="23:00" class="item">23:00</span>
+            </div>
+        </div>
+        <div class="button-res">
+            <button id="button-res">SAVE</button>
+        </div>
+    </div>
+</section>
+<script src="/../static/js/reservation.js"></script>
 {% endblock body %}

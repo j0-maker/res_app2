@@ -3,21 +3,46 @@
   padding: 0;
 }
 
+:root {
+  --primary-color: #3b5998;
+  --secondary-color: #f4f4f4;
+  --hover-color: rgb(37, 168, 185);
+}
+
 body {
   background-color: #f4f4f4;
   overflow-x: hidden;
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
+
+.btn {
+  color: #fff;
+  border: 1px solid rgb(37, 168, 185);
+  border-radius: 5px;
+  text-align: center;
+}
+
+
+/* NAVBAR */
+
+.button {
+  display: flex;
+  flex-direction: column;
+  float: right;
+  margin-right: 15px;
+  padding-top: 10px;
+}
+
 .navbar {
   background-color: #3b5998;
-  overflow: hidden;
-  height: 60px;
+  height: 62px;
 }
 
 .navbar a {
   color: #f2f2f2;
-  text-align: center;
+  text-align: left;
   padding: 14px 16px;
   text-decoration: none;
   font-size: 1rem;
@@ -45,14 +70,6 @@ body {
   content: "TABLEABLE";
 }
 
-.button {
-  display: flex;
-  flex-direction: column;
-  float: right;
-  margin-right: 15px;
-  padding-top: 10px;
-}
-
 a#login.btn {
   padding: 2px 10px;
   font-size: 10px;
@@ -61,18 +78,18 @@ a#login.btn {
 }
 
 a#register.btn {
+
   padding: 2px 10px;
   font-size: 10px;
   text-align: center;
 }
 
-.btn {
-  color: #fff;
-  border: 1px solid rgb(37, 168, 185);
-  border-radius: 5px;
+a#logout.btn {
+  margin-top: 11px;
+  padding: 2px 10px;
+  font-size: 10px;
   text-align: center;
 }
-
 .navbar .hamburger {
   float: left;
   display: block;
@@ -85,7 +102,6 @@ a#register.btn {
   list-style: none;
 }
 
-<<<<<<< HEAD
 .navbar a:hover {
   background-color: rgb(37, 168, 185);
   color: #fff;
@@ -133,25 +149,142 @@ a#register.btn {
   width: 100%;
 }
 
+/* RESERVATION */
+#reservation {
+  text-align: center;
+  padding-top: 70px;
+  max-width: 500px;
+}
+.res-heading {
+  padding-bottom: 30px;
+}
+
+.container {
+ 
+  margin: auto;  text-align: left;
+  color: #333;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height: 100vh;
+  padding: 10px 50px;
+}
+
+ul {
+  list-style: none;
+}
+
+#guest {
+  height: 200px;
+}
+
+.guest-container {
+  padding: 0.5rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 1rem;
+}
+
+.guest-number {
+  color: #f4f4f4;
+  text-align: center;
+  justify-self: center;
+  justify-content: center;
+  height: 20px;
+  width: 30px;
+  border-radius: 20px;
+  background-color: var(--primary-color);
+}
+
+.guest-number:hover {
+  background-color: var(--hover-color);
+  transition: ease-in-out 0.5s;
+  cursor: pointer;
+}
+
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 50px 0 ;
+}
+
+.hour-container {
+  padding: 0.5rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+  justify-items: center;
+}
+
+.item {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  border-radius: 30px;
+  text-align: center;
+  align-self: center;
+  padding: 0.5rem 1rem;
+}
+
+.item:hover {
+  background: var(--hover-color);
+  transition: ease-in-out 0.5s;
+  cursor: pointer;
+}
+
+.calendar-html {
+  background: var(--primary-color);
+  border: none;
+  color: var(--secondary-color);
+}
+
+.button-res {
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+}
+#button-res {
+  border: none;
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 1rem 2rem;
+  text-align: center;
+  border-radius: 30px;
+  width: 100%;
+  text-decoration: none;
+  outline: none;
+}
+#button-res:hover {
+  background: var(--hover-color);
+  transition: ease-in-out 0.5s;
+  cursor: pointer;
+}
+
+/* MEDIA */
+
 @media (max-width: 800px) {
+  /* Navbar */
   .navbar-nav {
     display: none;
   }
   #logo {
-    position: absolute;
     left: 30%;
-    color: #fff;
-    text-align: center;
-    display: flex;
     align-items: right;
   }
 }
 
+@media (max-width: 400px) {
+  /* Navbar */
+  #logo {
+    left: 20%;
+  }
+}
+
 @media (min-width: 800px) {
+  /* Navbar */
   .open-slide {
     display: none;
   }
-=======
+}
+
 .cont  {
     width: 80%;
     height: 360px; 
@@ -165,6 +298,4 @@ a#register.btn {
     width: 100%;
     height: 360px;
     padding-top: 30px;
-
->>>>>>> 354fc3642be3fe721c372f58cc43910f7b92e490
 }

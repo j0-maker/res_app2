@@ -1,217 +1,217 @@
 {% extends 'layout.html' %}
 {% block body %}
-<h1>DASHBOARD</h1>
+<h1 style="padding-top: 80px;">DASHBOARD</h1>
 {% if msg %}
 
-    <h2 id="alert">{{ msg }}</h2>
+<h2 id="alert">{{ msg }}</h2>
 
 {% endif %}
 {% for data in dataload %}
-    {% if data.d_days == 1 %}
-        <ul>
-            <li>
-            <p>MONDAY</p>
-            </li>
-            {% if data.d_close == 0 %}
-            <li>
-                <p>Closed</p>
-            </li>
-            {% else %}
-            <li>
-                <p>Open</p>
-            </li>
-            {% endif %}
-        </ul>
-            <!-- days form open/close-->
-            <form action="" method="POST">
-                <input type="hidden" name="day" value="{{ data.d_days }}">
-                <input type="hidden" name="day" value="{{ not data.d_close }}">
-                <input type="submit" name="submit_to_db" value="Change">
-            </form>
-            <!-- hours form-->
-                <form method="POST" action="">
-                    <p>set reservation opening and closing time for MONDAY</p>
-                    <input type="hidden" name="day_hours" value="{{ data.d_days }}">
-                    <label for="open-time">set opening time</label>
-                    <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
-                    <label for="close-time">set closing time</label>
-                    <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
-                    <input type="submit" name="settings_hours" value="SET!">
-                </form>
+{% if data.d_days == 1 %}
+<ul>
+    <li>
+        <p>MONDAY</p>
+    </li>
+    {% if data.d_close == 0 %}
+    <li>
+        <p>Closed</p>
+    </li>
+    {% else %}
+    <li>
+        <p>Open</p>
+    </li>
+    {% endif %}
+</ul>
+<!-- days form open/close-->
+<form action="" method="POST">
+    <input type="hidden" name="day" value="{{ data.d_days }}">
+    <input type="hidden" name="day" value="{{ not data.d_close }}">
+    <input type="submit" name="submit_to_db" value="Change">
+</form>
+<!-- hours form-->
+<form method="POST" action="">
+    <p>set reservation opening and closing time for MONDAY</p>
+    <input type="hidden" name="day_hours" value="{{ data.d_days }}">
+    <label for="open-time">set opening time</label>
+    <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
+    <label for="close-time">set closing time</label>
+    <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
+    <input type="submit" name="settings_hours" value="SET!">
+</form>
 
-    
-    {% endif %}
-    {% if data.d_days == 2 %}
-        <p>TUESDAY</p>
-        {% if data.d_close == 0 %}
-        
-            <p>Closed</p>
-        
-        {% else %}
-        
-            <p>Open</p>
-        
-        {% endif %}
-            <form action="" method="POST">
-            <input type="hidden" name="day" value="{{ data.d_days }}">
-            <input type="hidden" name="day" value="{{ not data.d_close }}">
-            <input type="submit" name="submit_to_db" value="Change">
-        </form>
-        <!-- hours form-->
-        <form method="POST" action="">
-            <h4>set reservation opening and closing time for TUESDAY</h4>
-            <input type="hidden" name="day_hours" value="{{ data.d_days }}">
-            <label for="open-time">set opening time</label>
-            <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
-            <label for="close-time">set closing time</label>
-            <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
-            <input type="submit" name="settings_hours" value="SET!">
-        </form>
 
-    
-    {% endif %}
-    {% if data.d_days == 3 %}
-        <p>WEDNESDAY</p>
-        {% if data.d_close == 0 %}
-        
-            <p>Closed</p>
-        
-        {% else %}
-        
-            <p>Open</p>
-        
-        {% endif %}
-        <form action="" method="POST">
-            <input type="hidden" name="day" value="{{ data.d_days }}">
-            <input type="hidden" name="day" value="{{ not data.d_close }}">
-            <input type="submit" name="submit_to_db" value="Change">
-        </form>
-        <!-- hours form-->
-        <form method="POST" action="">
-            <h4>set reservation opening and closing time for WEDNESDAY</h4>
-            <input type="hidden" name="day_hours" value="{{ data.d_days }}">
-            <label for="open-time">set opening time</label>
-            <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
-            <label for="close-time">set closing time</label>
-            <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
-            <input type="submit" name="settings_hours" value="SET!">
-        </form>
-    
-    {% endif %}
-    {% if data.d_days == 4 %}
-        <p>THURSDAY</p>
-        {% if data.d_close == 0 %}
-        
-            <p>Closed</p>
-        
-        {% else %}
-        
-            <p>Open</p>
-        
-        {% endif %}
-        <form action="" method="POST">
-            <input type="hidden" name="day" value="{{ data.d_days }}">
-            <input type="hidden" name="day" value="{{ not data.d_close }}">
-            <input type="submit" name="submit_to_db" value="Change">
-        </form>
-        <!-- hours form-->
-        <form method="POST" action="">
-            <h4>set reservation opening and closing time for THURSDAY</h4>
-            <input type="hidden" name="day_hours" value="{{ data.d_days }}">
-            <label for="open-time">set opening time</label>
-            <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
-            <label for="close-time">set closing time</label>
-            <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
-            <input type="submit" name="settings_hours" value="SET!">
-        </form>
+{% endif %}
+{% if data.d_days == 2 %}
+<p>TUESDAY</p>
+{% if data.d_close == 0 %}
 
-    
-    {% endif %}
-    {% if data.d_days == 5 %}
-        <p>FRIDAY</p>
-        {% if data.d_close == 0 %}
-        
-            <p>Closed</p>
-        
-        {% else %}
-        
-            <p>Open</p>
-        
-        {% endif %}
-        <form action="" method="POST">
-            <input type="hidden" name="day" value="{{ data.d_days }}">
-            <input type="hidden" name="day" value="{{ not data.d_close }}">
-            <input type="submit" name="submit_to_db" value="Change">
-        </form>
-        <!-- hours form-->
-        <form method="POST" action="">
-            <h4>set reservation opening and closing time for FRIDAY</h4>
-            <input type="hidden" name="day_hours" value="{{ data.d_days }}">
-            <label for="open-time">set opening time</label>
-            <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
-            <label for="close-time">set closing time</label>
-            <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
-            <input type="submit" name="settings_hours" value="SET!">
-        </form>
-    
-    {% endif %}
-    {% if data.d_days == 6 %}
-        <p>SATURDAY</p>
-        {% if data.d_close == 0 %}
-        
-            <p>Closed</p>
-        
-        {% else %}
-        
-            <p>Open</p>
-        
-        {% endif %}
-        <form action="" method="POST">
-            <input type="hidden" name="day" value="{{ data.d_days }}">
-            <input type="hidden" name="day" value="{{ not data.d_close }}">
-            <input type="submit" name="submit_to_db" value="Change">
-        </form>
-        <!-- hours form-->
-        <form method="POST" action="">
-            <h4>set reservation opening and closing time for SATURDAY</h4>
-            <input type="hidden" name="day_hours" value="{{ data.d_days }}">
-            <label for="open-time">set opening time</label>
-            <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
-            <label for="close-time">set closing time</label>
-            <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
-            <input type="submit" name="settings_hours" value="SET!">
-        </form>
-    
-    {% endif %}
-    {% if data.d_days == 7 %}
-        <p>SUNDAY</p>
-        {% if data.d_close == 0 %}
-        
-            <p>Closed</p>
-        
-        {% else %}
-        
-            <p>Open</p>
-        
-        {% endif %}
-        <form action="" method="POST">
-            <input type="hidden" name="day" value="{{ data.d_days }}">
-            <input type="hidden" name="day" value="{{ not data.d_close }}">
-            <input type="submit" name="submit_to_db" value="Change">
-        </form>
-        <form method="POST" action="">
-            <h4>set reservation opening and closing time for SUNDAY</h4>
-            <input type="hidden" name="day_hours" value="{{ data.d_days }}">
-            <label for="open-time">set opening time</label>
-            <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
-            <label for="close-time">set closing time</label>
-            <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
-            <input type="submit" name="settings_hours" value="SET!">
-        </form>
+<p>Closed</p>
 
-    
-    {% endif %}
-    
+{% else %}
+
+<p>Open</p>
+
+{% endif %}
+<form action="" method="POST">
+    <input type="hidden" name="day" value="{{ data.d_days }}">
+    <input type="hidden" name="day" value="{{ not data.d_close }}">
+    <input type="submit" name="submit_to_db" value="Change">
+</form>
+<!-- hours form-->
+<form method="POST" action="">
+    <h4>set reservation opening and closing time for TUESDAY</h4>
+    <input type="hidden" name="day_hours" value="{{ data.d_days }}">
+    <label for="open-time">set opening time</label>
+    <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
+    <label for="close-time">set closing time</label>
+    <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
+    <input type="submit" name="settings_hours" value="SET!">
+</form>
+
+
+{% endif %}
+{% if data.d_days == 3 %}
+<p>WEDNESDAY</p>
+{% if data.d_close == 0 %}
+
+<p>Closed</p>
+
+{% else %}
+
+<p>Open</p>
+
+{% endif %}
+<form action="" method="POST">
+    <input type="hidden" name="day" value="{{ data.d_days }}">
+    <input type="hidden" name="day" value="{{ not data.d_close }}">
+    <input type="submit" name="submit_to_db" value="Change">
+</form>
+<!-- hours form-->
+<form method="POST" action="">
+    <h4>set reservation opening and closing time for WEDNESDAY</h4>
+    <input type="hidden" name="day_hours" value="{{ data.d_days }}">
+    <label for="open-time">set opening time</label>
+    <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
+    <label for="close-time">set closing time</label>
+    <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
+    <input type="submit" name="settings_hours" value="SET!">
+</form>
+
+{% endif %}
+{% if data.d_days == 4 %}
+<p>THURSDAY</p>
+{% if data.d_close == 0 %}
+
+<p>Closed</p>
+
+{% else %}
+
+<p>Open</p>
+
+{% endif %}
+<form action="" method="POST">
+    <input type="hidden" name="day" value="{{ data.d_days }}">
+    <input type="hidden" name="day" value="{{ not data.d_close }}">
+    <input type="submit" name="submit_to_db" value="Change">
+</form>
+<!-- hours form-->
+<form method="POST" action="">
+    <h4>set reservation opening and closing time for THURSDAY</h4>
+    <input type="hidden" name="day_hours" value="{{ data.d_days }}">
+    <label for="open-time">set opening time</label>
+    <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
+    <label for="close-time">set closing time</label>
+    <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
+    <input type="submit" name="settings_hours" value="SET!">
+</form>
+
+
+{% endif %}
+{% if data.d_days == 5 %}
+<p>FRIDAY</p>
+{% if data.d_close == 0 %}
+
+<p>Closed</p>
+
+{% else %}
+
+<p>Open</p>
+
+{% endif %}
+<form action="" method="POST">
+    <input type="hidden" name="day" value="{{ data.d_days }}">
+    <input type="hidden" name="day" value="{{ not data.d_close }}">
+    <input type="submit" name="submit_to_db" value="Change">
+</form>
+<!-- hours form-->
+<form method="POST" action="">
+    <h4>set reservation opening and closing time for FRIDAY</h4>
+    <input type="hidden" name="day_hours" value="{{ data.d_days }}">
+    <label for="open-time">set opening time</label>
+    <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
+    <label for="close-time">set closing time</label>
+    <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
+    <input type="submit" name="settings_hours" value="SET!">
+</form>
+
+{% endif %}
+{% if data.d_days == 6 %}
+<p>SATURDAY</p>
+{% if data.d_close == 0 %}
+
+<p>Closed</p>
+
+{% else %}
+
+<p>Open</p>
+
+{% endif %}
+<form action="" method="POST">
+    <input type="hidden" name="day" value="{{ data.d_days }}">
+    <input type="hidden" name="day" value="{{ not data.d_close }}">
+    <input type="submit" name="submit_to_db" value="Change">
+</form>
+<!-- hours form-->
+<form method="POST" action="">
+    <h4>set reservation opening and closing time for SATURDAY</h4>
+    <input type="hidden" name="day_hours" value="{{ data.d_days }}">
+    <label for="open-time">set opening time</label>
+    <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
+    <label for="close-time">set closing time</label>
+    <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
+    <input type="submit" name="settings_hours" value="SET!">
+</form>
+
+{% endif %}
+{% if data.d_days == 7 %}
+<p>SUNDAY</p>
+{% if data.d_close == 0 %}
+
+<p>Closed</p>
+
+{% else %}
+
+<p>Open</p>
+
+{% endif %}
+<form action="" method="POST">
+    <input type="hidden" name="day" value="{{ data.d_days }}">
+    <input type="hidden" name="day" value="{{ not data.d_close }}">
+    <input type="submit" name="submit_to_db" value="Change">
+</form>
+<form method="POST" action="">
+    <h4>set reservation opening and closing time for SUNDAY</h4>
+    <input type="hidden" name="day_hours" value="{{ data.d_days }}">
+    <label for="open-time">set opening time</label>
+    <input type="time" name="open_time" value="{{ data.d_open_time }}" step="1800" min="19:30" max="22:30">
+    <label for="close-time">set closing time</label>
+    <input type="time" name="close_time" value="{{ data.d_close_time }}" step="1800" min="19:30" max="23:30">
+    <input type="submit" name="settings_hours" value="SET!">
+</form>
+
+
+{% endif %}
+
 {% endfor %}
 
 
