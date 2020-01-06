@@ -230,6 +230,11 @@ ul {
   cursor: pointer;
 }
 
+.selected {
+  background-color: var(--hover-color);
+}
+
+
 .calendar-html {
   background: var(--primary-color);
   border: none;

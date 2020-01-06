@@ -7,9 +7,10 @@ people.forEach(function (guest) {
 
 function addGuest() {
   people.forEach(function (guest) {
-    guest.style.background = "#3b5998";
+    guest.classList.remove("selected");
+    guest.classList.add("guest-number");
   });
-  this.style.background = "rgb(37, 168, 185)";
+  this.classList.add("selected");
   guestNumber = this.getAttribute("value");
 }
 
@@ -24,9 +25,10 @@ items.forEach(function (item) {
 });
 function addTime() {
   items.forEach(function (item) {
-    item.style.background = "#3b5998";
+    item.classList.remove("selected");
+    item.classList.add("item");
   });
-  this.style.background = "rgb(37, 168, 185)";
+  this.classList.add("selected");
   hour = this.getAttribute("value");
 }
 
