@@ -8,4 +8,10 @@
     <input type="submit" name="set_reservation" value="Book">
 </form>
 
+{% if msg %}
+
+    <p>{{ msg }}</p>
+
+{% endif %}
+
 {% endblock body %}

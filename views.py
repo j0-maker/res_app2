@@ -166,7 +166,7 @@ def login():
 def logout():
     session.clear()
     app.logger.info("LOGGED OUT")
-    return redirect(url_for("login"))
+    return redirect(url_for("login2"))
 
 
 @app.route("/dashboard2", methods =["GET","POST"])
@@ -250,15 +250,46 @@ def register():
     return render_template("provalog.html", form = form)
 
 
-@app.route("/main_cont")
+@app.route("/main_cont", methods=["GET", "POST"])
 @is_logged_in
 def main_cont():
 
     dataload = ReSettings.query.filter_by(d_r_id = session["id"])
     dataload = dataload.order_by(ReSettings.id)
     print(dataload)
+    msg = None
+        
+    if request.method=="POST":
 
-    return render_template("main_cont.html", dataload=dataload)
+        if "settings_hours" in request.form:
+
+            open_time = request.form["open_time"]
+            close_time = request.form["close_time"]
+            day_hours = request.form["day_hours"]
+            if open_time < close_time:
+                old_time = ReSettings.query.filter_by(d_days = day_hours, d_r_id = session["id"]).first()
+                old_time.d_open_time = open_time
+                old_time.d_close_time = close_time
+                
+
+                print("ok")
+                msg = "opening and closing time set!"
+            else:
+                print("not ok")
+                msg = "opening time must be smaller then closing time"
+
+        else:
+            get_status = request.form.getlist("day")
+            bool_value_for_db_query = get_bool(get_status[1])
+            print(bool_value_for_db_query)
+            old_close_status = ReSettings.query.filter_by(d_days = int(get_status[0]), d_close = bool_value_for_db_query, d_r_id = session["id"]).first()
+            old_close_status.d_close = not bool_value_for_db_query
+            print(not bool_value_for_db_query)
+            
+            print(get_status)
+        db.session.commit()
+
+    return render_template("main_cont.html", dataload=dataload, msg=msg)
 
 
 @app.route("/login2", methods=["GET", "POST"])
@@ -281,7 +312,7 @@ def login2():
 
                 app.logger.info("logged in!")
 
-                return redirect(url_for("dashboard2"))
+                return redirect(url_for("main_cont"))
             else:
                 error = "invalid"
                 app.logger.info("PASSWORD WRONG")
@@ -385,86 +416,99 @@ def reservations3(id):
                 n_of_people = int(request.form["n_of_people"])
                 booking_time = request.form["booking_time"]
 
-                day_in_numbers = datetime.datetime.strptime(data_day, "%Y-%m-%d").weekday()
+                if  datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) > datetime.datetime.strptime(data_day, "%Y-%m-%d"):
+                    print(datetime.datetime.strptime(booking_time, "%H:%M").time())
+                    print(datetime.datetime.now().time().replace(second=0, microsecond=0))
+                    
+                    msg = "insert valid date"
+                    return render_template("reservation3.html", id=id, msg = msg)
 
-                #find id in time_range from actual time "19:00" is equal to 1, "19:30" to 2 ecc...
-                find_time_range_id = Time_range.query.filter_by(t_time = booking_time).first()
-                time_range_id = find_time_range_id.id
+                else:
+                    if datetime.datetime.now().time() > datetime.datetime.strptime(booking_time, "%H:%M").time():
+                        msg = "insert valid time"
+                        return render_template("reservation3.html", id=id, msg = msg)
 
-                #retrieve freespot total_for given day using day_in_numbers
-                freespot_total_day = Restaurants.query.filter_by(r_key=id).first()
-                freespot_total_day = freespot_total_day.id
-                freespot_total_day = ReSettings.query.filter_by(d_r_id=freespot_total_day).all()
-                freespot_total_day = freespot_total_day[day_in_numbers].d_freespot_max
-
-                print(time_range_id)
-
-                find_spot_hour_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day, t_restaurant=id).first()
-                try:
-                    find_spot_hour_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day, t_restaurant=id).first()
-                except:
-                    print("index out of range, not considered")
-
-                if not find_spot_hour_frst and not find_spot_hour_scnd:
-                    if freespot_total_day - n_of_people < 0:
-                        app.logger.info("max reached")
-                        msg = 2
-                        pass
                     else:
-                        #make new reservation if both "ranges" return none
-                        new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
-                        db.session.add(new_reservation)
-                        #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
-                        new_spot_frst = AvailableSpot(t_restaurant=id, t_time_id=time_range_id, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
-                        new_spot_scnd = AvailableSpot(t_restaurant=id, t_time_id=time_range_id + 1, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
-                        db.session.add(new_spot_frst)
-                        db.session.add(new_spot_scnd)
 
-                elif find_spot_hour_frst and find_spot_hour_scnd:
-                    #get freespot from both ranges
-                    get_available_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day, t_restaurant=id).first()
-                    get_available_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day, t_restaurant=id).first()
-                    if get_available_frst.t_freespot - n_of_people < 0 or get_available_scnd.t_freespot - n_of_people < 0:
-                        app.logger.info("max reached")
-                        pass
-                    else:
-                        new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
-                        db.session.add(new_reservation)
-                        #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
-                        get_available_frst.t_freespot = get_available_frst.t_freespot - n_of_people
-                        get_available_scnd.t_freespot = get_available_scnd.t_freespot - n_of_people
+                        day_in_numbers = datetime.datetime.strptime(data_day, "%Y-%m-%d").weekday()
 
-                elif find_spot_hour_frst and not find_spot_hour_scnd:
-                    get_available_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day, t_restaurant=id).first()
-                    if get_available_frst.t_freespot - n_of_people < 0:
-                        app.logger.info("max reached")
-                        pass
-                    else:
-                        new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
-                        db.session.add(new_reservation)
-                        #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
-                        get_available_frst.t_freespot = get_available_frst.t_freespot - n_of_people
-                        new_spot_scnd = AvailableSpot(t_restaurant=id, t_time_id=time_range_id + 1, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
-                        db.session.add(new_spot_scnd)
+                        #find id in time_range from actual time "19:00" is equal to 1, "19:30" to 2 ecc...
+                        find_time_range_id = Time_range.query.filter_by(t_time = booking_time).first()
+                        time_range_id = find_time_range_id.id
 
-                elif not find_spot_hour_frst and find_spot_hour_scnd:
-                    get_available_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day, t_restaurant=id).first()
-                    if get_available_scnd.t_freespot - n_of_people < 0:
-                        app.logger.info("max reached")
-                        pass
-                    else:
-                        new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
-                        db.session.add(new_reservation)
-                        #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
-                        get_available_scnd.t_freespot = get_available_scnd.t_freespot - n_of_people
-                        new_spot_frst = AvailableSpot(t_restaurant=id, t_time_id=time_range_id, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
-                        db.session.add(new_spot_frst)
-            
-                db.session.commit()
+                        #retrieve freespot total_for given day using day_in_numbers
+                        freespot_total_day = Restaurants.query.filter_by(r_key=id).first()
+                        freespot_total_day = freespot_total_day.id
+                        freespot_total_day = ReSettings.query.filter_by(d_r_id=freespot_total_day).all()
+                        freespot_total_day = freespot_total_day[day_in_numbers].d_freespot_max
+
+                        print(time_range_id)
+
+                        find_spot_hour_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day, t_restaurant=id).first()
+                        try:
+                            find_spot_hour_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day, t_restaurant=id).first()
+                        except:
+                            print("index out of range, not considered")
+
+                        if not find_spot_hour_frst and not find_spot_hour_scnd:
+                            if freespot_total_day - n_of_people < 0:
+                                app.logger.info("max reached")
+                                msg = 2
+                                pass
+                            else:
+                                #make new reservation if both "ranges" return none
+                                new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
+                                db.session.add(new_reservation)
+                                #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
+                                new_spot_frst = AvailableSpot(t_restaurant=id, t_time_id=time_range_id, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
+                                new_spot_scnd = AvailableSpot(t_restaurant=id, t_time_id=time_range_id + 1, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
+                                db.session.add(new_spot_frst)
+                                db.session.add(new_spot_scnd)
+
+                        elif find_spot_hour_frst and find_spot_hour_scnd:
+                            #get freespot from both ranges
+                            get_available_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day, t_restaurant=id).first()
+                            get_available_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day, t_restaurant=id).first()
+                            if get_available_frst.t_freespot - n_of_people < 0 or get_available_scnd.t_freespot - n_of_people < 0:
+                                app.logger.info("max reached")
+                                pass
+                            else:
+                                new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
+                                db.session.add(new_reservation)
+                                #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
+                                get_available_frst.t_freespot = get_available_frst.t_freespot - n_of_people
+                                get_available_scnd.t_freespot = get_available_scnd.t_freespot - n_of_people
+
+                        elif find_spot_hour_frst and not find_spot_hour_scnd:
+                            get_available_frst = AvailableSpot.query.filter_by(t_time_id = time_range_id, t_date_id = data_day, t_restaurant=id).first()
+                            if get_available_frst.t_freespot - n_of_people < 0:
+                                app.logger.info("max reached")
+                                pass
+                            else:
+                                new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
+                                db.session.add(new_reservation)
+                                #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
+                                get_available_frst.t_freespot = get_available_frst.t_freespot - n_of_people
+                                new_spot_scnd = AvailableSpot(t_restaurant=id, t_time_id=time_range_id + 1, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
+                                db.session.add(new_spot_scnd)
+
+                        elif not find_spot_hour_frst and find_spot_hour_scnd:
+                            get_available_scnd = AvailableSpot.query.filter_by(t_time_id = time_range_id + 1, t_date_id = data_day, t_restaurant=id).first()
+                            if get_available_scnd.t_freespot - n_of_people < 0:
+                                app.logger.info("max reached")
+                                pass
+                            else:
+                                new_reservation = Reservations(s_day=data_day, s_npeople=n_of_people, s_time=booking_time, s_r_id=id)
+                                db.session.add(new_reservation)
+                                #add n_of_people to both ranges(1 hour per table) by taking original settings(both none is a new reservation for that range)
+                                get_available_scnd.t_freespot = get_available_scnd.t_freespot - n_of_people
+                                new_spot_frst = AvailableSpot(t_restaurant=id, t_time_id=time_range_id, t_date_id=data_day, t_freespot = freespot_total_day - n_of_people)
+                                db.session.add(new_spot_frst)
+                
+                        db.session.commit()
 
                 #print(data_day, n_of_people, booking_time)
                 
 
         return render_template("reservation3.html", id=id, msg = msg)
-
 

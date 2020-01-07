@@ -1,10 +1,130 @@
-<ul>
-    <li><a href="/" class="button">home</a></li>
-    <li><a href="/register" class="button">register</a></li>
-    <li><a href="/login2" class="button">login</a></li>
-{% if session.logged_in%} 
-    <li><a href="/main_cont" class="button">dashboard</a></li>
-    <li><a href="/reservation/{{ session['key'] }}" class="button">reservation</a></li>
-    <li><a href="/logout" class="button">logout</a></li>
+<!-- <section id="navbar">
+  <div class="navbar-container">
+    <ul class="nav-container">
+      <li><a href="/" class="item button">home</a></li>
+      <li><a href="/register" class="item button">register</a></li>
+      <li><a href="/login" class="item button">login</a></li>
+      {% if session.logged_in%}
+      <li><a href="/dashboard2" class="item button">dashboard</a></li>
+      <li>
+        <a href="/reservation/{{ session['key'] }}" class="item button"
+          >reservation</a
+        >
+      </li>
+      <li><a href="/logout" class="item button">logout</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</section> -->
+<!-- 
+<nav class="navbar">
+  <span class="open-slide">
+    <a class="hamburger" href="#" onclick="openSlideMenu()">
+      <svg width="30" height="30">
+        <path d="M0,5 30,5" stroke="#fff" stroke-width="5" />
+        <path d="M0,14 30,14" stroke="#fff" stroke-width="5" />
+        <path d="M0,23 30,23" stroke="#fff" stroke-width="5" />
+      </svg>
+    </a>
+  </span>
+  <span id="logo"><img class="png" src="../../static/img/logo3.png" /></span>
+  <div class="button">
+    <a id="login" class="btn" href="/login">LOGIN</a>
+    <a id="register" class="btn" href="/register">REGISTER</a>
+  </div>
+  <ul class="navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Contact</a></li>
+
+    {% if session.logged_in %}
+    <li><a href="/dashboard2" class="btn">dashboard</a></li>
+    <li>
+      <a href="/reservation/{{ session['key'] }}" class="btn">reservation</a>
+    </li>
+    <li><a href="/logout" class="btn">logout</a></li>
+    {% endif %}
+  </ul>
+</nav>
+<div id="side-menu" class="side-nav">
+  <a href="" class="btn-close" onclick="closeSlideMenu()">&times;</a>
+  <a href="#">Home</a>
+  <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Contact</a>
+  {% if session.logged_in %}
+  <li><a href="/dashboard2" class="btn">dashboard</a></li>
+  <li>
+    <a href="/reservation/{{ session['key'] }}" class="btn">reservation</a>
+  </li>
+  <li><a href="/logout" class="btn">logout</a></li>
+  {% endif %}
+</div> -->
+
+<!-- FIXED NAVBAR -->
+<nav class="navbar">
+  <span class="open-slide">
+    <a class="hamburger" href="#" onclick="openSlideMenu()">
+      <svg width="30" height="30">
+        <path d="M0,5 30,5" stroke="#fff" stroke-width="5" />
+        <path d="M0,14 30,14" stroke="#fff" stroke-width="5" />
+        <path d="M0,23 30,23" stroke="#fff" stroke-width="5" />
+      </svg>
+    </a>
+  </span>
+  <span id="logo"><img class="png" src="../../static/img/logo3.png" /></span>
+
+
+
+  <!-- LOGGED IN -->
+
+  {% if session.logged_in %}
+  <div class="homepage">
+    <div class="button">
+      <a id="logout" href="/logout" class="btn">LOGOUT</a>
+    </div>
+    <ul class="navbar-nav">
+      <li><a href="/main_cont">Dashboard</a></li>
+      <li>
+        <a href="/reservation/{{ session['key'] }}">Reservation</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- mobile -->
+  <div id="side-menu" class="side-nav">
+    <a href="" class="btn-close" onclick="closeSlideMenu()">&times;</a>
+    <a href="/main_cont">Dashboard</a>
+    <a href="/reservation/{{ session['key'] }}">Reservation</a>
+  </div>
+
+
+  {% else %}
+  <!-- NOT LOGGED IN -->
+  <div class="homepage">
+    <div class="button">
+      <a id="login" href="/login2" class="btn">LOGIN</a>
+      <a id="register" href="/register" class="btn">REGISTER</a>
+    </div>
+    <ul class="navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- mobile -->
+  <div id="side-menu" class="side-nav">
+    <a href="" class="btn-close" onclick="closeSlideMenu()">&times;</a>
+    <a href="/">Home</a>
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Contact</a>
+  </div>
+</nav>
+
 {% endif %}
-</ul>
+
+<script src="../../static/js/navbarResponsive.js"></script>
