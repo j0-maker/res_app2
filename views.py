@@ -35,6 +35,14 @@ def get_bool(what_bool):
                 else:
                     return False
 
+def format_datetime(value):
+
+    a = datetime.time.strftime(value, "%H:%M")
+    
+    return a
+
+app.jinja_env.filters['datetime'] = format_datetime
+
 """@app.route("/", methods=["GET", "POST"])
 def home():
     reservations = Reservations.query.all()
@@ -80,7 +88,12 @@ def reservation(id):
                 reservations = reservations.order_by(Reservations.s_time)
                 freespot_default = AvailableSpot.query.filter_by(t_restaurant=id, t_date_id=data_day)
                 freespot_default = freespot_default.order_by(AvailableSpot.t_time_id)
-                return render_template("reservation.html", reservations=reservations, freespot = freespot_default, toshow=True, id=id)
+                #find_percentage_of_height(for css)
+                one_hundred_percent = ReSettings.query.filter_by(d_r_id = restaurant_id.id)
+                one_hundred_percent = one_hundred_percent.order_by(ReSettings.d_days)
+                list_of_freespot = [i.d_freespot_max for i in one_hundred_percent]
+        
+                return render_template("reservation.html", reservations=reservations, freespot = freespot_default, toshow=True, id=id, list_of_freespot=list_of_freespot)
             elif 'hide' in request.form:
                 return render_template("reservation.html", reservations=reservations, toshow=False, id=id)
             elif 'delete' in request.form:
@@ -169,7 +182,7 @@ def logout():
     return redirect(url_for("login2"))
 
 
-@app.route("/dashboard2", methods =["GET","POST"])
+"""@app.route("/dashboard2", methods =["GET","POST"])
 @is_logged_in
 def dashboard2():
         dataload = ReSettings.query.filter_by(d_r_id = session["id"])
@@ -206,7 +219,7 @@ def dashboard2():
                 print(get_status)
             db.session.commit()
         return render_template("dashboard2.html", dataload = dataload, msg = msg)
-
+"""
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
@@ -240,7 +253,7 @@ def register():
         rest_id = rest_name.id
 
         for i in range(1,8):
-            new_day = ReSettings(d_days = i, d_close = 1, d_open_time = "19:30", d_close_time = "23:30", d_freespot_max = 20, d_r_id = rest_id)
+            new_day = ReSettings(d_days = i, d_close = 1, d_open_time = 12 , d_close_time = 20, d_open_time_morn = 2 , d_close_time_morn = 9, d_freespot_max = 20, d_r_id = rest_id)
             db.session.add(new_day)
         
         db.session.commit()
@@ -258,6 +271,7 @@ def main_cont():
     dataload = dataload.order_by(ReSettings.id)
     print(dataload)
     msg = None
+    timeranges = Time_range.query.all()
         
     if request.method=="POST":
 
@@ -265,11 +279,24 @@ def main_cont():
 
             open_time = request.form["open_time"]
             close_time = request.form["close_time"]
+            open_time_morn = request.form["open_time_morn"]
+            close_time_morn = request.form["close_time_morn"]
             day_hours = request.form["day_hours"]
-            if open_time < close_time:
+
+            open_time_to_id = Time_range.query.filter_by(t_time = open_time).first().id
+            close_time_to_id = Time_range.query.filter_by(t_time = close_time).first().id
+            open_time_morn_to_id = Time_range.query.filter_by(t_time = open_time_morn).first().id
+            close_time_morn_to_id = Time_range.query.filter_by(t_time = close_time_morn).first().id
+
+            print(open_time_to_id, open_time)
+            print(close_time_to_id, close_time)
+
+            if open_time < close_time and open_time_morn < close_time_morn:
                 old_time = ReSettings.query.filter_by(d_days = day_hours, d_r_id = session["id"]).first()
-                old_time.d_open_time = open_time
-                old_time.d_close_time = close_time
+                old_time.d_open_time = open_time_to_id-1
+                old_time.d_close_time = close_time_to_id-1
+                old_time.d_open_time_morn = open_time_morn_to_id-1
+                old_time.d_close_time_morn = close_time_morn_to_id-1
                 
 
                 print("ok")
@@ -289,7 +316,7 @@ def main_cont():
             print(get_status)
         db.session.commit()
 
-    return render_template("main_cont.html", dataload=dataload, msg=msg)
+    return render_template("main_cont.html", dataload=dataload, msg=msg, timeranges=timeranges)
 
 
 @app.route("/login2", methods=["GET", "POST"])
@@ -395,6 +422,11 @@ def reservations3(id):
 
     msg = None
 
+    restaurant_id = Restaurants.query.filter_by(r_key = id).first().id
+    load_settings = ReSettings.query.filter_by(d_r_id = restaurant_id)
+    load_settings = load_settings.order_by(ReSettings.d_days).all()
+    #morning_time = list(range(load_settings[0].d_open_time_morn, load_settings[0].d_close_time_morn+1))
+
     #check if route exists--------------
     a = Restaurants.query.all()
 
@@ -411,7 +443,19 @@ def reservations3(id):
     else:
             
         if request.method == "POST":
-            if 'set_reservation' in request.form:
+
+            if "choose_date" in request.form:
+                load_time_ranges = Time_range.query.all()
+                s_day = request.form["s-day"]
+                day_in_numbers = datetime.datetime.strptime(s_day, "%Y-%m-%d").weekday()
+                load_settings = load_settings[day_in_numbers]
+                range_morning = list(range(load_settings.d_open_time_morn, load_settings.d_close_time_morn+1))
+                range_evening = list(range(load_settings.d_open_time, load_settings.d_close_time + 1))
+                tot_range = range_morning + range_evening
+
+                return render_template("reservation3.html", id=id, msg=msg, tot_range=tot_range, show_time=True, load_time_ranges=load_time_ranges)
+
+            elif 'set_reservation' in request.form:
                 data_day = request.form["sday"]
                 n_of_people = int(request.form["n_of_people"])
                 booking_time = request.form["booking_time"]

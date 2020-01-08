@@ -35,8 +35,10 @@ class ReSettings(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     d_days = db.Column(db.Integer, nullable = False)
     d_close = db.Column(db.Boolean, nullable = False)
-    d_open_time = db.Column(TIME, nullable = False)
-    d_close_time = db.Column(TIME, nullable = False)
+    d_open_time = db.Column(db.Integer, nullable=False)
+    d_close_time = db.Column(db.Integer, nullable=False)
+    d_open_time_morn = db.Column(db.Integer, nullable=False)
+    d_close_time_morn = db.Column(db.Integer, nullable=False)
     d_freespot_max = db.Column(db.Integer, nullable = False)
     d_r_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), nullable=False)
 

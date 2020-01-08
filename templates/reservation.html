@@ -23,13 +23,30 @@
                 <input type="submit" name="delete" value="Delete!">
             </form>
         {% endfor %}
-        <div>
+        <div class="hours-container">
         {% for i in freespot %}
-
-            <p>{{ i.t_time_id}} - {{ i.t_freespot }}</p>
-            
+            {% set percentage_height = list_of_freespot[loop.index-1] - i.t_freespot %}
+            {% set percentage_height = (percentage_height/list_of_freespot[loop.index-1])|round(2) %}
+            {% set percentage_height = (percentage_height * 100)|int %}
+            <p>{{percentage_height}}</p>
+            <div class="hours">
+                <div style="height:100px; position:relative">
+                    <div style="position:absolute; bottom:0; width:100%; height: {{percentage_height}}%; background: red"></div>
+                </div>
+                <p>{{ list_of_freespot[loop.index-1] }}</p>
+                <p style="text-align: center;">{{ i.timerange.t_time}} - {{ i.t_freespot }}</p>
+            </div>
         {% endfor %}
         </div>
+        
+        <div class="time-container">
+
+            <p class="item1">dsced</p>
+            <p>dsd</p>
+            <p>dsd</p>
+
+        </div>
+
     {% endif %}
 
 {% endblock body %}

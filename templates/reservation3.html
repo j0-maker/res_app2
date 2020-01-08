@@ -1,17 +1,62 @@
-{% block body %}
 
-<form method="POST" action="">
-    <input type="date" name="sday" required>
-    <input type="number" step="1" name="n_of_people" required>
-    <input type="time" name="booking_time" value="19:30" step="1800" min="19:30" max="22:30" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/stylesheet.css') }}">
+</head>
+<body>
 
-    <input type="submit" name="set_reservation" value="Book">
-</form>
 
-{% if msg %}
+    <form method="POST">
+        <input type="date" name="s-day" required>
+        <input type="submit" name="choose_date" value="choose_date">
+    </form>
+    <form method="POST" action="">
+        <input type="date" name="sday" required>
+        <input type="number" step="1" name="n_of_people" required>
+        <input type="time" name="booking_time" value="19:30" step="1800" min="19:30" max="22:30" required>
+        <input type="submit" name="set_reservation" value="Book">
+    </form>
+    
+    {% if show_time %}
+    <section id="reservation">
+        <div class="container">
+            <div id="hours">
+                <h3>Choose a time:</h3>
+                <div class="hour-container">
+                    {% for i in tot_range %}
+                    
+                    {% set x = load_time_ranges[i].t_time|datetime %}
 
+                    <span value="{{ load_time_ranges[i].t_time }}" class="item">{{ x }}</span>
+    
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="button-res">
+                <button id="button-res">SAVE</button>
+            </div>
+        </div>
+    </section>
+    
+    
+    {% endif %}
+    
+    
+    {% if msg %}
+    
     <p>{{ msg }}</p>
+    
+    {% endif %}
+    
+    
+    
+    <script src="{{ url_for('static', filename='js/reservation.js') }}"></script>
+    
+</body>
+</html>
 
-{% endif %}
 
-{% endblock body %}

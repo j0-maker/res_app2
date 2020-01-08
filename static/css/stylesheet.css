@@ -258,6 +258,10 @@ ul {
   cursor: pointer;
 }
 
+.selected{
+  background: var(--hover-color);
+}
+
 /* MEDIA */
 
 @media (max-width: 800px) {
@@ -306,4 +310,24 @@ ul {
 
 }
 
+.hours-container{
+  display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+.hours-container > .hours{
+  -webkit-flex: auto;
+  flex: auto;
+}
+
+.time-container{
+  display: grid;
+  grid-template-columns: [row1] 1fr [row2] 1fr [row3] 1fr
+}
+
+.item1{
+  grid-column: row2;
+}
 
